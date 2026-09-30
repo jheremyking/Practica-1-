@@ -1,0 +1,11 @@
+PRACTICA 1: INSTALACION DEL SISTEMA OPERATIVO
+
+Sistema Operativo: Ubuntu
+
+Se creó una máquina virtual utilizando VirtualBox.
+
+Se configuraron los recursos necesarios para ejecutar el sistema operativo.
+
+La tarjeta de red de la máquina virtual fue configurada en modo Bridge (Adaptador puente).
+
+Se realizó la instalación del sistema operativo Ubuntu en la máquina virtual.
