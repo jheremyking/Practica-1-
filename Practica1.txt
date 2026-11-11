@@ -9,3 +9,112 @@ Se configuraron los recursos necesarios para ejecutar el sistema operativo.
 La tarjeta de red de la máquina virtual fue configurada en modo Bridge (Adaptador puente).
 
 Se realizó la instalación del sistema operativo Ubuntu en la máquina virtual.
+PRACTICAS 2, 3 Y 4: SISTEMAS OPERATIVOS 3
+
+Estudiante: Jheremy
+Matricula: 2026-0503
+Sistema Operativo: Kali Linux (VirtualBox)
+
+
+PRACTICA 2: CONFIGURACION DE PARAMETROS DE RED
+
+Se revisó la configuración de red actual de la máquina virtual.
+ip a
+ip route
+cat /etc/resolv.conf
+nmcli connection show
+
+Forma 1: comando ip, IP estática (temporal).
+sudo ip addr flush dev eth0
+sudo ip addr add 10.0.2.50/24 dev eth0
+sudo ip route add default via 10.0.2.2
+ip a show eth0
+ping -c 3 8.8.8.8
+
+Forma 1: comando ip, DHCP (temporal).
+sudo ip addr flush dev eth0
+sudo dhclient eth0
+ip a show eth0
+
+Forma 2: nmcli, IP estática con DNS de Google (permanente).
+sudo nmcli con mod "Wired connection 1" ipv4.method manual ipv4.addresses 10.0.2.50/24 ipv4.gateway 10.0.2.2 ipv4.dns "8.8.8.8 8.8.4.4"
+sudo nmcli con up "Wired connection 1"
+ip a show eth0
+cat /etc/resolv.conf
+
+Forma 2: nmcli, DHCP (permanente).
+sudo nmcli con mod "Wired connection 1" ipv4.method auto ipv4.addresses "" ipv4.gateway ""
+sudo nmcli con up "Wired connection 1"
+ip a show eth0
+
+Forma 3: nmtui (menú en la terminal).
+sudo nmtui
+
+Forma 4: interfaz gráfica (Wired Settings, pestaña IPv4).
+
+Forma 5: archivo clásico de Debian.
+cat /etc/network/interfaces
+
+Se configuraron los DNS de Google 8.8.8.8 y 8.8.4.4 y se comprobaron.
+nslookup google.com
+ping -c 3 google.com
+sudo nmcli con mod "Wired connection 1" ipv4.method auto ipv4.ignore-auto-dns yes ipv4.dns "8.8.8.8 8.8.4.4"
+sudo nmcli con up "Wired connection 1"
+cat /etc/resolv.conf
+
+
+PRACTICA 3: GESTION DE USUARIOS Y GRUPOS
+
+Se creó el usuario jheremy y se agregó al grupo sudo para darle permisos de administración.
+sudo adduser jheremy
+sudo usermod -aG sudo jheremy
+groups jheremy
+su - jheremy
+sudo whoami
+exit
+
+Se creó el grupo guest, se creó un usuario y se agregó al grupo.
+sudo groupadd guest
+sudo adduser invitado
+sudo usermod -aG guest invitado
+getent group guest
+id invitado
+
+Se eliminaron el usuario y el grupo creados.
+sudo deluser --remove-home invitado
+sudo groupdel guest
+getent group guest
+id invitado
+
+
+PRACTICA 4: GESTION DE PERMISOS DE ARCHIVOS
+
+Se creó la carpeta materia y dentro el archivo estudiante.txt, editado con vi con el nombre y la matrícula.
+cd ~
+mkdir materia
+cd materia
+vi estudiante.txt
+cat estudiante.txt
+ls -l estudiante.txt
+
+Se modificaron los permisos para que solo el usuario propietario tenga control total.
+chmod 700 estudiante.txt
+ls -l estudiante.txt
+
+Se modificaron los permisos para que solo el grupo propietario tenga control total.
+chmod 070 estudiante.txt
+ls -l estudiante.txt
+
+Se creó la carpeta materia2 y se copió el archivo estudiante.txt dentro de ella.
+cd ~
+mkdir materia2
+cp materia/estudiante.txt materia2/
+sudo cp materia/estudiante.txt materia2/
+ls -l materia2
+sudo chown $USER:$USER materia2/estudiante.txt
+ls -l materia2
+
+Se eliminó la carpeta materia junto con el archivo estudiante.txt.
+rm -rf materia
+ls
+ls materia2
